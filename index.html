@@ -1,0 +1,130 @@
+# interfaz.py
+
+import tkinter as tk
+from tkinter import messagebox
+from sistema import Sistema
+
+class Interfaz:
+    def __init__(self, sistema):
+        self.sistema = sistema
+
+        # Ventana principal
+        self.root = tk.Tk()
+        self.root.title("Sistema de Ventas de Grúas y Repuestos")
+
+        # Variables de usuario
+        self.usuario = None
+
+        # Iniciar menú
+        self.mostrar_menu_principal()
+
+    def mostrar_menu_principal(self):
+        """Muestra el menú principal para crear cuenta o iniciar sesión."""
+        self.limpiar_ventana()
+
+        # Título
+        tk.Label(self.root, text="Menú Principal", font=("Arial", 18)).pack(pady=10)
+
+        # Botones
+        tk.Button(self.root, text="Iniciar sesión", width=20, command=self.mostrar_inicio_sesion).pack(pady=5)
+        tk.Button(self.root, text="Crear cuenta", width=20, command=self.mostrar_crear_cuenta).pack(pady=5)
+
+    def limpiar_ventana(self):
+        """Limpia todos los widgets de la ventana."""
+        for widget in self.root.winfo_children():
+            widget.destroy()
+
+    def mostrar_inicio_sesion(self):
+        """Muestra la ventana de inicio de sesión."""
+        self.limpiar_ventana()
+
+        tk.Label(self.root, text="Iniciar sesión", font=("Arial", 18)).pack(pady=10)
+
+        tk.Label(self.root, text="Usuario:").pack()
+        self.entrada_usuario = tk.Entry(self.root)
+        self.entrada_usuario.pack(pady=5)
+
+        tk.Label(self.root, text="Contraseña:").pack()
+        self.entrada_contrasenia = tk.Entry(self.root, show="*")
+        self.entrada_contrasenia.pack(pady=5)
+
+        tk.Button(self.root, text="Iniciar sesión", command=self.iniciar_sesion).pack(pady=5)
+        tk.Button(self.root, text="Volver al menú principal", command=self.mostrar_menu_principal).pack(pady=5)
+
+    def iniciar_sesion(self):
+        """Intenta iniciar sesión con los datos proporcionados."""
+        nombre_usuario = self.entrada_usuario.get()
+        contrasenia = self.entrada_contrasenia.get()
+        mensaje = self.sistema.iniciar_sesion(nombre_usuario, contrasenia)
+
+        if "exitoso" in mensaje:
+            self.usuario = nombre_usuario
+            self.mostrar_menu_usuario()
+        else:
+            messagebox.showerror("Error", mensaje)
+
+    def mostrar_menu_usuario(self):
+        """Muestra el menú para usuarios logueados."""
+        self.limpiar_ventana()
+
+        tk.Label(self.root, text=f"Bienvenido, {self.usuario}", font=("Arial", 18)).pack(pady=10)
+
+        tk.Button(self.root, text="Mostrar productos", width=20, command=self.mostrar_productos).pack(pady=5)
+        tk.Button(self.root, text="Comprar producto", width=20, command=self.mostrar_comprar_producto).pack(pady=5)
+        tk.Button(self.root, text="Cerrar sesión", width=20, command=self.cerrar_sesion).pack(pady=5)
+
+    def mostrar_productos(self):
+        """Muestra la lista de productos disponibles."""
+        productos = self.sistema.mostrar_productos()
+        self.limpiar_ventana()
+
+        tk.Label(self.root, text="Productos disponibles", font=("Arial", 18)).pack(pady=10)
+        tk.Label(self.root, text=productos).pack(pady=5)
+        tk.Button(self.root, text="Volver", width=20, command=self.mostrar_menu_usuario).pack(pady=5)
+
+    def mostrar_comprar_producto(self):
+        """Muestra la ventana para comprar productos."""
+        self.limpiar_ventana()
+
+        tk.Label(self.root, text="Comprar producto", font=("Arial", 18)).pack(pady=10)
+
+        tk.Label(self.root, text="Producto:").pack()
+        self.entrada_producto = tk.Entry(self.root)
+        self.entrada_producto.pack(pady=5)
+
+        tk.Label(self.root, text="Cantidad:").pack()
+        self.entrada_cantidad = tk.Entry(self.root)
+        self.entrada_cantidad.pack(pady=5)
+
+        tk.Button(self.root, text="Comprar", command=self.comprar_producto).pack(pady=5)
+        tk.Button(self.root, text="Volver", width=20, command=self.mostrar_menu_usuario).pack(pady=5)
+
+    def comprar_producto(self):
+        """Realiza la compra de un producto."""
+        producto_elegido = self.entrada_producto.get().lower()
+        try:
+            cantidad = int(self.entrada_cantidad.get())
+            if cantidad <= 0:
+                raise ValueError("La cantidad debe ser mayor que cero.")
+        except ValueError as e:
+            messagebox.showerror("Error", "Por favor, ingrese una cantidad válida.")
+            return
+
+        mensaje = self.sistema.comprar_producto(producto_elegido, cantidad)
+        messagebox.showinfo("Compra", mensaje)
+
+    def cerrar_sesion(self):
+        """Cierra la sesión del usuario actual."""
+        self.usuario = None
+        self.sistema.logged_in = False
+        self.mostrar_menu_principal()
+
+    def run(self):
+        """Inicia la interfaz gráfica."""
+        self.root.mainloop()
+
+
+if __name__ == "__main__":
+    sistema = Sistema()
+    interfaz = Interfaz(sistema)
+    interfaz.run()
