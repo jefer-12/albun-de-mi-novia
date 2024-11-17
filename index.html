@@ -1,130 +1,43 @@
-# interfaz.py
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mi Querida Novia</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
-import tkinter as tk
-from tkinter import messagebox
-from sistema import Sistema
+  <!-- Cabecera con un mensaje bonito -->
+  <header>
+    <h1>Para Mi Querida Novia</h1>
+    <p>Este es un pequeño regalo para ti</p>
+  </header>
 
-class Interfaz:
-    def __init__(self, sistema):
-        self.sistema = sistema
+  <!-- Sección de imágenes -->
+  <section class="galeria">
+    <h2>MI NOVIA HERMOSA</h2>
+    <div class="imagenes">
+      <img src="imagenes/bella.jpg" alt="Foto juntos 1">
+      <img src="imagenes/bella1.jpg" alt="Foto juntos 2">
+      <img src="imagenes/bella3.jpg" alt="Foto juntos 3">
+    </div>
+  </section>
 
-        # Ventana principal
-        self.root = tk.Tk()
-        self.root.title("Sistema de Ventas de Grúas y Repuestos")
+  <!-- Sección de mensaje personal -->
+  <section class="mensaje">
+    <h2>Mi Mensaje para Ti</h2>
+    <p>Desde el primer momento que te vi, me quedé sin palabras. No podía creer lo hermosa que eras, no solo por fuera, sino por dentro, por esa luz que irradia. Algo en tiempo me impactó de una manera que nunca había sentido antes. Desde ese día, no he podido dejar de pensar en ti, en tu sonrisa, en tus ojos, en todo lo que eres.
 
-        # Variables de usuario
-        self.usuario = None
+        Tú, Yeraldine, te volviste la mujer de mis sueños, esa persona que ni siquiera sabía que estaba buscando pero que cuando llegaste, supe que era todo lo que necesitaba. Eres el motivo por el que me levanto cada día, el motivo que me da fuerzas cuando siento que todo está en contra. Tu amor, tu presencia, me dan esperanza, me dan ganas de seguir
+        
+        Te amo de una manera que no puedo describir con palabras. Mi corazón tarde por ti, cada pensamiento que tengo gira en torno a ti. No hay un solo día en el que no te agradezca por ser quien eres, por darme la oportunidad de amarte. Eres mi sueño hecho realidad.!</p>
+  </section>
 
-        # Iniciar menú
-        self.mostrar_menu_principal()
+  <!-- Pie de página -->
+  <footer>
+    <p>&copy; 2024 Mi Página para Ti. Todos los derechos reservados.</p>
+  </footer>
 
-    def mostrar_menu_principal(self):
-        """Muestra el menú principal para crear cuenta o iniciar sesión."""
-        self.limpiar_ventana()
-
-        # Título
-        tk.Label(self.root, text="Menú Principal", font=("Arial", 18)).pack(pady=10)
-
-        # Botones
-        tk.Button(self.root, text="Iniciar sesión", width=20, command=self.mostrar_inicio_sesion).pack(pady=5)
-        tk.Button(self.root, text="Crear cuenta", width=20, command=self.mostrar_crear_cuenta).pack(pady=5)
-
-    def limpiar_ventana(self):
-        """Limpia todos los widgets de la ventana."""
-        for widget in self.root.winfo_children():
-            widget.destroy()
-
-    def mostrar_inicio_sesion(self):
-        """Muestra la ventana de inicio de sesión."""
-        self.limpiar_ventana()
-
-        tk.Label(self.root, text="Iniciar sesión", font=("Arial", 18)).pack(pady=10)
-
-        tk.Label(self.root, text="Usuario:").pack()
-        self.entrada_usuario = tk.Entry(self.root)
-        self.entrada_usuario.pack(pady=5)
-
-        tk.Label(self.root, text="Contraseña:").pack()
-        self.entrada_contrasenia = tk.Entry(self.root, show="*")
-        self.entrada_contrasenia.pack(pady=5)
-
-        tk.Button(self.root, text="Iniciar sesión", command=self.iniciar_sesion).pack(pady=5)
-        tk.Button(self.root, text="Volver al menú principal", command=self.mostrar_menu_principal).pack(pady=5)
-
-    def iniciar_sesion(self):
-        """Intenta iniciar sesión con los datos proporcionados."""
-        nombre_usuario = self.entrada_usuario.get()
-        contrasenia = self.entrada_contrasenia.get()
-        mensaje = self.sistema.iniciar_sesion(nombre_usuario, contrasenia)
-
-        if "exitoso" in mensaje:
-            self.usuario = nombre_usuario
-            self.mostrar_menu_usuario()
-        else:
-            messagebox.showerror("Error", mensaje)
-
-    def mostrar_menu_usuario(self):
-        """Muestra el menú para usuarios logueados."""
-        self.limpiar_ventana()
-
-        tk.Label(self.root, text=f"Bienvenido, {self.usuario}", font=("Arial", 18)).pack(pady=10)
-
-        tk.Button(self.root, text="Mostrar productos", width=20, command=self.mostrar_productos).pack(pady=5)
-        tk.Button(self.root, text="Comprar producto", width=20, command=self.mostrar_comprar_producto).pack(pady=5)
-        tk.Button(self.root, text="Cerrar sesión", width=20, command=self.cerrar_sesion).pack(pady=5)
-
-    def mostrar_productos(self):
-        """Muestra la lista de productos disponibles."""
-        productos = self.sistema.mostrar_productos()
-        self.limpiar_ventana()
-
-        tk.Label(self.root, text="Productos disponibles", font=("Arial", 18)).pack(pady=10)
-        tk.Label(self.root, text=productos).pack(pady=5)
-        tk.Button(self.root, text="Volver", width=20, command=self.mostrar_menu_usuario).pack(pady=5)
-
-    def mostrar_comprar_producto(self):
-        """Muestra la ventana para comprar productos."""
-        self.limpiar_ventana()
-
-        tk.Label(self.root, text="Comprar producto", font=("Arial", 18)).pack(pady=10)
-
-        tk.Label(self.root, text="Producto:").pack()
-        self.entrada_producto = tk.Entry(self.root)
-        self.entrada_producto.pack(pady=5)
-
-        tk.Label(self.root, text="Cantidad:").pack()
-        self.entrada_cantidad = tk.Entry(self.root)
-        self.entrada_cantidad.pack(pady=5)
-
-        tk.Button(self.root, text="Comprar", command=self.comprar_producto).pack(pady=5)
-        tk.Button(self.root, text="Volver", width=20, command=self.mostrar_menu_usuario).pack(pady=5)
-
-    def comprar_producto(self):
-        """Realiza la compra de un producto."""
-        producto_elegido = self.entrada_producto.get().lower()
-        try:
-            cantidad = int(self.entrada_cantidad.get())
-            if cantidad <= 0:
-                raise ValueError("La cantidad debe ser mayor que cero.")
-        except ValueError as e:
-            messagebox.showerror("Error", "Por favor, ingrese una cantidad válida.")
-            return
-
-        mensaje = self.sistema.comprar_producto(producto_elegido, cantidad)
-        messagebox.showinfo("Compra", mensaje)
-
-    def cerrar_sesion(self):
-        """Cierra la sesión del usuario actual."""
-        self.usuario = None
-        self.sistema.logged_in = False
-        self.mostrar_menu_principal()
-
-    def run(self):
-        """Inicia la interfaz gráfica."""
-        self.root.mainloop()
-
-
-if __name__ == "__main__":
-    sistema = Sistema()
-    interfaz = Interfaz(sistema)
-    interfaz.run()
+</body>
+</html>
